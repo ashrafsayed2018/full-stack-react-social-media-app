@@ -12,7 +12,6 @@
   body {
     @apply bg-dark-1 text-white min-h-screen font-inter;
   }
-
 }
 
 @layer utilities {
