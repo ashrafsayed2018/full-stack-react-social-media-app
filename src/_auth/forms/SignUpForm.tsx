@@ -14,15 +14,19 @@ import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import { signUpValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
-import { Link } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
+import { Link, useNavigate } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
+import { useUserContext } from "@/context/AuthContext"
 
 const SignUpForm = () => {
   const { toast } = useToast()
+  const {checkAuthUser} = useUserContext();
+  const navigate = useNavigate()
 
-
-    const isLoading = true;
+    const {mutateAsync:createUserAccount,isPending:isCreatingUser} = useCreateUserAccount();
+    const {mutateAsync:signInAccount} = useSignInAccount();
+  
     // 1. Define your form.
     const form = useForm<z.infer<typeof signUpValidation>>({
       resolver: zodResolver(signUpValidation),
@@ -40,6 +44,27 @@ const SignUpForm = () => {
      if(!newUser) {
       return    toast({
         title: "Sign Up Failed",
+      });
+     }
+
+     const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+     });
+
+     if(!session) {
+      return    toast({
+        title: "Sign Up Failed",
+      });
+     }
+
+     const isLoggedIn = await checkAuthUser();
+     if(isLoggedIn) {
+      form.reset();
+      navigate('/');
+     } else {
+      toast({
+        title: "Sign Up Failed please try again",
       });
      }
 
@@ -110,14 +135,14 @@ const SignUpForm = () => {
                 )}
               />
               <Button type="submit" className="shad-button_primary">
-                {isLoading ? 
+                {isCreatingUser ? 
                 <div className="flex-center gap-2">
                      <Loader/>
                 </div> : "Sign up"}
               </Button>
               <p className="text-small-regular text-light-2 text-center mt-2">already have an account 
 
-              <Link to="sign-in" className="text-primary-500 text-small-semibold ml-3">Login</Link>
+              <Link to="/sign-in" className="text-primary-500 text-small-semibold ml-3">Login</Link>
               </p>
             </form>
           </div>
