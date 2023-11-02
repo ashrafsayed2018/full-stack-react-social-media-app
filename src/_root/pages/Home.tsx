@@ -1,7 +1,27 @@
+import Loader from "@/components/shared/Loader";
+import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 
 const Home = () => {
+  const {data:posts,isPending:isPostLoading,isError:isErrorPosts} =useGetRecentPosts();
+ 
   return (
-    <div>Home is here</div>
+    <div className="flex flex-1">
+      <div className="home-container">
+        <div className="home-posts">
+          <h2 className="h3-bold md:h2-bold text-right w-full">home feed</h2>
+          {isPostLoading && !posts ? <Loader /> : (
+            <ul className="flex flex-1 flex-col gap-9 w-full">
+
+             {
+              posts?.documents.map((post) => {
+              return <li key={post.id} className="container">{post.caption}</li>;
+              })
+             }
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
 
