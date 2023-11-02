@@ -17,11 +17,11 @@ import Loader from "@/components/shared/Loader"
 import { Link, useNavigate } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations"
-import { useUserContext } from "@/context/AuthContext"
+import { UseUserContext } from "@/context/AuthContext"
 
 const SignInForm = () => {
   const { toast } = useToast()
-  const {checkAuthUser,isLoading:isUserLoading} = useUserContext();
+  const {checkAuthUser,isLoading:isUserLoading} = UseUserContext();
   const navigate = useNavigate()
 
     const {mutateAsync:signInAccount} = useSignInAccount();
@@ -46,7 +46,7 @@ const SignInForm = () => {
 
      if(!session) {
       return    toast({
-        title: "Sign Up Failed",
+        title: "Sign Up Failed please try again",
       });
      }
 
@@ -102,7 +102,7 @@ const SignInForm = () => {
                 {isUserLoading ? 
                 <div className="flex-center gap-2">
                      <Loader/>
-                </div> : "Sign in..."}
+                </div> : "Sign in"}
               </Button>
               <p className="text-small-regular text-light-2 text-center mt-2">not have an account yet?
 

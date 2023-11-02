@@ -17,11 +17,11 @@ import Loader from "@/components/shared/Loader"
 import { Link, useNavigate } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
-import { useUserContext } from "@/context/AuthContext"
+import { UseUserContext } from "@/context/AuthContext"
 
 const SignUpForm = () => {
   const { toast } = useToast()
-  const {checkAuthUser} = useUserContext();
+  const {checkAuthUser} = UseUserContext();
   const navigate = useNavigate()
 
     const {mutateAsync:createUserAccount,isPending:isCreatingUser} = useCreateUserAccount();
@@ -52,21 +52,21 @@ const SignUpForm = () => {
       password: values.password,
      });
 
-     if(!session) {
-      return    toast({
-        title: "Sign Up Failed",
-      });
-     }
+        if(!session) {
+          return  toast({
+            title: "Sign Up Failed please try again",
+          });
+        }
 
-     const isLoggedIn = await checkAuthUser();
-     if(isLoggedIn) {
-      form.reset();
-      navigate('/');
-     } else {
-      toast({
-        title: "Sign Up Failed please try again",
-      });
-     }
+      const isLoggedIn = await checkAuthUser();
+      if(isLoggedIn) {
+          form.reset();
+          navigate('/');
+      } else {
+          toast({
+            title: "Sign Up Failed please try again",
+          });
+      }
 
     }
   return (
@@ -92,7 +92,7 @@ const SignUpForm = () => {
                 )}
               />
 
-<FormField
+              <FormField
                 control={form.control}
                 name="username"
                 render={({ field }) => (
